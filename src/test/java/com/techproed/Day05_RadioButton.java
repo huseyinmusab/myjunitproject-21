@@ -1,12 +1,15 @@
 package com.techproed;
 
+import com.github.javafaker.Faker;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import java.net.PortUnreachableException;
 import java.util.concurrent.TimeUnit;
@@ -34,16 +37,41 @@ public class Day05_RadioButton {
 
 
     @Test
-    public void accountCreate(){
+    public void accountCreate() throws InterruptedException {
+
+        Thread.sleep(3000);
+
+        Faker faker = new Faker();
 
         driver.findElement(By.partialLinkText("Neues Konto erstellen")).click();
 
 
-        driver.findElement(By.xpath("//input[@name='firstname']")).sendKeys("FakeName");
-        driver.findElement(By.xpath("//input[@name='lastname']")).sendKeys("FakeLast");
+        driver.findElement(By.xpath("//input[@name='firstname']")).sendKeys(faker.name().firstName());
+        driver.findElement(By.xpath("//input[@name='lastname']")).sendKeys(faker.name().lastName());
 
         driver.findElement(By.xpath("//input[@name='reg_email__']")).sendKeys("1234567890");
         driver.findElement(By.xpath("//input[@name='reg_passwd__']")).sendKeys("1234");
+
+        //SELECT BIRTHDAY
+        //Selecting months
+        WebElement monthElement = driver.findElement(By.id("month"));
+        Select month = new Select(monthElement);
+        month.selectByVisibleText("Jan.");
+
+        //Selecting day
+        WebElement dayElement = driver.findElement(By.id("day"));
+        Select day = new Select(dayElement);
+        day.selectByValue("1");
+
+        //Selecting year
+        WebElement yearElement = driver.findElement(By.id("year"));
+        Select year = new Select(yearElement);
+        year.selectByVisibleText("1990");
+
+         Thread.sleep(3000);
+         driver.findElement(By.name("websubmit")).click();
+         Thread.sleep(3000);
+
 
         //        SELECT GENDER
         //        This is radio button
@@ -56,7 +84,10 @@ public class Day05_RadioButton {
 
 
 
-
+    }
+    @After
+    public void tearDown(){
+        //driver.quit();
     }
 
 
